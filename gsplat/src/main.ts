@@ -1,64 +1,120 @@
-import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
+import './style.css';
 import * as SPLAT from "gsplat"; 
-const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-const progressDialog = document.getElementById("progress-dialog") as HTMLDialogElement;
-const progressIndicator = document.getElementById("progress-indicator") as HTMLProgressElement;
 
 
-const scene = new SPLAT.Scene(); 
-const camera = new SPLAT.Camera(); 
-const renderer = new SPLAT.WebGLRenderer(); 
-const controls = new SPLAT.OrbitControls(camera, renderer.canvas);
-const format = "polycam"; 
-let flag1 = false; 
-let flag2 = false; 
-let loading = false;
+addEventListener("DOMContentLoaded", (_) => {
+  const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+  const progressDialog = document.getElementById("progress-dialog") as HTMLDialogElement;
+  const progressIndicator = document.getElementById("progress-indicator") as HTMLProgressElement;
 
-const selectFile = async(file : File) => {
-  if (loading) return; 
-  console.log("Loading!!!!"); 
-  loading = true; 
-  document.createTextNode("Loading!!!!"); 
-  if (file.name.endsWith(".splat")) {
-    await SPLAT.Loader.LoadFromFileAsync(file, scene, (progress: number) => {
-      console.log(progress); 
-  });
-  } else if (file.name.endsWith(".ply")) {
-    await SPLAT.PLYLoader.LoadFromFileAsync(
-        file,
-        scene,
-        (progress: number) => {
-            console.log(progress); 
-        },
-        format,
-    );
+
+  const scene = new SPLAT.Scene(); 
+  const camera = new SPLAT.Camera(); 
+  const renderer = new SPLAT.WebGLRenderer(canvas); 
+  const controls = new SPLAT.OrbitControls(camera, canvas);
+  const format = "polycam"; 
+  let loading = false;
+
+  const selectFile = async(file : File) => {
+    if (loading) return; 
+    console.log("Loading!!!!"); 
+    loading = true; 
+    document.createTextNode("Loading!!!!"); 
+    if (file.name.endsWith(".splat")) {
+      await SPLAT.Loader.LoadFromFileAsync(file, scene, (progress: number) => {
+        console.log(progress);
+    });
+    } else if (file.name.endsWith(".ply")) {
+      await SPLAT.PLYLoader.LoadFromFileAsync(
+          file,
+          scene,
+          (progress: number) => {
+              console.log(progress); 
+          },
+          format,
+      );
+    }
+    scene.saveToFile(file.name.replace(".ply", ".splat"));
+    progressDialog.close(); 
+    loading = false;
+  };
+
+
+  const toggleCanvasDisplay = () => {
+    canvas.style.display = canvas.style.display === "none" ? "block" : "none";
   }
-  scene.saveToFile(file.name.replace(".ply", ".splat"));
-  progressDialog.close(); 
-  loading = false;
-};
 
-const loadSplatURL = async(url : string) => {
-  if (loading) return; 
-  console.log("Loading!!!!"); 
-  loading = true; 
-  document.createTextNode("Loading!!!!"); 
-  if (url.includes(".splat")) {
-    await SPLAT.Loader.LoadAsync(url, scene, () => {});
-  } else {
-    console.log("Ply file is being loaded to scene"); 
-    await SPLAT.PLYLoader.LoadAsync(url, scene, (progress: number) => {console.log(progress)});
+  const toggleOtherDisplay = () => {
+    const other = document.getElementById("other") as HTMLDivElement;
+    other.style.display = other.style.display === "none" ? "block" : "none";
   }
-  //scene.saveToFile(file.name.replace(".ply", ".splat"));
-  progressDialog.close();
-  loading = false;
-};
 
+  const toggleActivateBtnDisplay = () => {
+    const other = document.getElementById("connect-btn") as HTMLDivElement;
+    other.style.display = other.style.display === "none" ? "flex" : "none";
+  }
+  const toggleRecordBtnDisplay = () => {
+    const other = document.getElementById("record-btn") as HTMLDivElement;
+    other.style.display = other.style.display === "none" ? "flex" : "none";
+  }
 
-async function main() {
+  const toggleStopRecordBtnDisplay = () => {
+    const other = document.getElementById("end-record-btn") as HTMLDivElement;
+    other.style.display = other.style.display === "none" ? "flex" : "none";
+  }
+
+  const toggleConnectionLoading = () => {
+    const other = document.getElementById("connection-loading") as HTMLDivElement;
+    other.style.display = other.style.display === "none" ? "block" : "none";
+
+    const connect_btn = document.getElementById("connect-btn") as HTMLDivElement;
+
+    connect_btn.setAttribute("disabled", connect_btn.getAttribute("disabled") === "true" ? "false" : "true");
+  }
+
+  const toggleRecordLoading = () => {
+    const other = document.getElementById("record-loading") as HTMLDivElement;
+    other.style.display = other.style.display === "none" ? "block" : "none";
+
+    const record_btn = document.getElementById("record-btn") as HTMLDivElement;
+
+    record_btn.setAttribute("disabled", record_btn.getAttribute("disabled") === "true" ? "false" : "true");
+  }
+
+  // const toggleIsRecording = () => {
+  //   const other = document.getElementById("is-recording") as HTMLDivElement;
+  //   const recording_btn = document.getElementById("record-btn") as HTMLDivElement; 
+  //   other.style.display = other.style.display === "none" ? "block" : "none";
+
+  //   // increase the right padding by 30px
+  //   // recording_btn.style.paddingRight = "40px";
+  //   recording_btn.innerHTML = "Recording...";
+  // }
+
+  const toggleFinalLoading = () => {
+    const other = document.getElementById("final-loading") as HTMLDivElement;
+    other.style.display = other.style.display === "none" ? "block" : "none";
+  }
+
+  const loadSplatURL = async(url : string) => {
+    if (loading) return; 
+    console.log("Loading!!!!"); 
+    loading = true; 
+    document.createTextNode("Loading!!!!"); 
+    if (url.includes(".splat")) {
+      await SPLAT.Loader.LoadAsync(url, scene, () => {});
+    } else {
+      console.log("Ply file is being loaded to scene"); 
+      await SPLAT.PLYLoader.LoadAsync(url, scene, (progress: number) => {console.log(progress)});
+    }
+    //scene.saveToFile(file.name.replace(".ply", ".splat"));
+    toggleFinalLoading();
+    toggleCanvasDisplay();
+    // toggleOtherDisplay();
+    progressDialog.close();
+    loading = false;
+  };
+
   progressDialog.close(); 
   const frame = () => {
     controls.update(); 
@@ -68,39 +124,46 @@ async function main() {
   }
   requestAnimationFrame(frame); 
 
-}
-
-
-addEventListener("DOMContentLoaded", (e) => {
-  
-
-
-  
-
   document.getElementById('connect-btn')?.addEventListener("click", async () => {
+    toggleConnectionLoading();
     let res1 = await fetch('http://localhost:5000/api/drone')
     let res1_json = await res1.json(); 
 
-    console.log(res1_json); 
 
-    flag1 = res1_json['message'];
+    // setTimeout(() => {
+    toggleActivateBtnDisplay();
+    toggleRecordBtnDisplay();
+    toggleConnectionLoading();
+    // }, 1000);
+
+    console.log(res1_json); 
   })
 
   document.getElementById('record-btn')?.addEventListener("click", async () => {
+    toggleRecordLoading();
     let res2 = await fetch('http://localhost:5000/api/start_record');
-
-    
     let res2_json = await res2.json();
+    // setTimeout(() => {
+    toggleRecordLoading();
     console.log(res2_json); 
+      // toggleIsRecording();
+    toggleRecordBtnDisplay();
+    toggleStopRecordBtnDisplay();
+    // }, 1000);
   })
 
 
   document.getElementById('end-record-btn')?.addEventListener("click", async () => {
     try {
-      let res3 = await fetch('http://localhost:5000/api/end_record');
-      //let x = 1;
+      await fetch('http://localhost:5000/api/end_record');
     }
     finally {
+      // toggleRecordBtnDisplay();
+      toggleStopRecordBtnDisplay();
+      // toggleRecordLoading();
+      toggleFinalLoading();
+
+      
       setTimeout(async () => {
         let res4 = await fetch('http://localhost:5000/api/upload'); 
         let res4_json = await res4.json(); 
@@ -120,37 +183,24 @@ addEventListener("DOMContentLoaded", (e) => {
         //let ply_url = "https://storage.googleapis.com/download/storage/v1/b/output-splat-bucket/o/uploaded-uploaded-streaming-244825507086081748.ply?generation=1708269482359716&alt=media"; 
 
         let ply_url = vid_res_json.ply_url;
-        console.log(ply_url); 
+        
         loadSplatURL(ply_url);
-
-        // let poll = setInterval(() => {
-        //   fetch(ply_url).then((ply_file) => {
-        //     console.log()
-        //     clearInterval(poll);
-        //     ply_file.blob().then((ply_blob) => {
-        //       selectFile(new File([ply_blob], "dummy.ply"));
-        //     });
-        //   })
-        // }, 1000);
       }, 10000);
     }
   })
-});
 
+  document.addEventListener("dragover", function(event) {
+    event.preventDefault();
+  });
 
-main(); 
+  document.addEventListener("drop", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
 
-document.addEventListener("dragover", function(event) {
-  event.preventDefault();
-});
-
-document.addEventListener("drop", (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-
-  if (e.dataTransfer != null && e.dataTransfer.files.length > 0) {
-      selectFile(e.dataTransfer.files[0]);
-  }
+    if (e.dataTransfer != null && e.dataTransfer.files.length > 0) {
+        selectFile(e.dataTransfer.files[0]);
+    }
+  });
 });
 
 

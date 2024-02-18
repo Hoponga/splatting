@@ -94,3 +94,46 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+
+
+.circle-recording-icon {
+  position: absolute;
+  margin-left: 40px;
+  border-radius: 50%;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+
+.inner-circle-recording-icon {
+  width: 10px;
+  height: 10px;
+  animation-name: innerCircleRecordingIconAnimation;
+}
+
+.outer-circle-recording-icon {
+  width: 15px;
+  height: 15px;
+  animation-name: outerCircleRecordingIconAnimation;
+}
+
+@keyframes innerCircleRecordingIconAnimation {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+@keyframes outerCircleRecordingIconAnimation {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
