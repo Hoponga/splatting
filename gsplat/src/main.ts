@@ -16,15 +16,35 @@ const format = "polycam";
 
 
 async function main() {
-  await fetch('http://localhost:5000/api/hello')
+  fetch('http://localhost:5000/api/drone')
   .then(response => response.json())
-  .then(data => console.log(data));
+  .then(data => {
+    console.log(data); 
+    setTimeout( () => {if (data.message > 0) {
+      fetch('http://localhost:5000/api/start_record').then(
+      response => response.json()
+      ).then(data => {
+        console.log(data); 
+        if (data.message > 0) {
+          setTimeout(() => {
+            fetch('http://localhost:5000/api/end_record')
+            .then(response => response.json())
+            .then(data => console.log(data));
+          }, 2000); 
+        }
+      }); 
+    }}, 200); 
+  }); 
+  
+
+
+  // await fetch('http://localhost:5000/api/hello')
+  // .then(response => response.json())
+  // .then(data => console.log(data));
   //const url = "https://huggingface.co/datasets/dylanebert/3dgs/resolve/main/bonsai/point_cloud/iteration_7000/point_cloud.ply"; // change later 
 
-
-
   //await SPLAT.PLYLoader.LoadAsync(url, scene, (progress) => (progressIndicator.value = progress*100), format); 
-  progressDialog.close(); 
+  
   //const filename = "out.splat"; 
   //scene.saveToFile(filename); 
 
@@ -59,13 +79,14 @@ async function main() {
       );
   }
   scene.saveToFile(file.name.replace(".ply", ".splat"));
+  progressDialog.close(); 
   loading = false;
   
 };
 
-document.addEventListener("dragover", function(event) {
-  event.preventDefault();
-});
+// document.addEventListener("dragover", function(event) {
+//   event.preventDefault();
+// });
 
   document.addEventListener("drop", (e) => {
     e.preventDefault();
