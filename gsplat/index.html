@@ -7,9 +7,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>gsplat.js - PLY Converter</title>
     </head>
-    <!-- <h1>
+    <h1>
       Splatting is All You Need
-    </h1> -->
+    </h1>
     <body>
         <div id="progress-container">
             <dialog open id="progress-dialog">
@@ -19,6 +19,10 @@
                 <progress max="100" id="progress-indicator"></progress>
             </dialog>
         </div>
+        <button id="connect-btn">Initialize Drone</button>
+        <button id="record-btn">Start Recording</button>
+        <button id="end-record-btn">Stop Recording</button>
+
 
         <canvas id="canvas"></canvas>
         <script type="module" src="/src/main.ts"></script>

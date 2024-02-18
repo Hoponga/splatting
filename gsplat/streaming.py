@@ -51,7 +51,9 @@ class StreamingExample:
         assert self.drone.connect(retry=3)
 
         if DRONE_RTSP_PORT is not None:
-            self.drone.streaming.server_addr = f"{DRONE_IP}:{DRONE_RTSP_PORT}"
+
+            self.drone.streaming.server_addr = f"{DRONE_IP}"
+            print(self.drone.streaming.server_addr)
 
         print(type(self.drone.streaming), self.drone.streaming) 
 
@@ -214,6 +216,8 @@ class StreamingExample:
 
 
 def test_streaming():
+    print(DRONE_IP)
+    
     drone = olympe.Drone(DRONE_IP)
 
     streaming_example = StreamingExample(drone) 
